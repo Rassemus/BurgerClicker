@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import allCoupons from './allCoupons';
 
 class Coupons extends Component {
-  claimCoupon(id) {
-    console.log('coupon claimed!' + id);
-  }
-
   render() {
     const burgers = Math.floor(this.props.clicks);
 
@@ -27,7 +23,7 @@ class Coupons extends Component {
           <div className='coupon__button'>
             <button
               onClick={() => {
-                this.claimCoupon(coupon.id);
+                this.props.claimCoupon(coupon.id);
               }}
             >
               <div className='coupon__price'>{coupon.price}</div>
