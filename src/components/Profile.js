@@ -25,6 +25,8 @@ class Profile extends Component {
     let coupons = this.props.coupons.reduce(groupCoupons, []);
 
     let rows = coupons.map(coupon => {
+      let validDue = new Date(coupon.validDue).toDateString();
+
       return (
         <div className='coupon' key={coupon.id}>
           <div className='coupon__offer'>
@@ -39,7 +41,7 @@ class Profile extends Component {
           </div>
           <div className='coupon__button'>
             <div className='coupon__price'>{coupon.count} pc</div>
-            <div className='coupon__claim'>Valid due {coupon.validDue}</div>
+            <div className='coupon__claim'>Valid due {validDue}</div>
           </div>
         </div>
       );

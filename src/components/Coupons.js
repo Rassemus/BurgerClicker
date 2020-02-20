@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import allCoupons from './allCoupons';
 
 class Coupons extends Component {
@@ -16,7 +17,7 @@ class Coupons extends Component {
           </div>
           <div className='coupon__prices'>
             <div className='coupons__newPrice'>
-              {coupon.newPrice.toFixed(2)}{' '}
+              {coupon.newPrice.toFixed(2)}
             </div>
             <div className='coupon__oldPrice'>{coupon.oldPrice.toFixed(2)}</div>
           </div>

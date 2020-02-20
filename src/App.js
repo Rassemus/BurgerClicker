@@ -6,8 +6,9 @@ import Game from './components/Game';
 import Coupons from './components/Coupons';
 import Profile from './components/Profile';
 
-import './App.css';
 import allCoupons from './components/allCoupons';
+
+import './App.css';
 
 class Clicker extends Component {
   constructor(props) {
