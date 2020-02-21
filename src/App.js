@@ -5,7 +5,6 @@ import Menu from './components/Menu';
 import Game from './components/Game';
 import Coupons from './components/Coupons';
 import Profile from './components/Profile';
-
 import allCoupons from './components/allCoupons';
 
 import './App.css';
@@ -15,16 +14,46 @@ class Clicker extends Component {
     super(props);
     this.state = {
       clicks: 0,
-      coupons: []
+      coupons: [],
+      claimableCoupons: 0,
+      countUpdateValue: 0
     };
     this.setClicks = this.setClicks.bind(this);
     this.claimCoupon = this.claimCoupon.bind(this);
+    this.updateCouponCount = this.updateCouponCount.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateCouponCount(this.state.clicks);
+  }
+
+  updateCouponCount(clicks) {
+    let coupons = 0;
+    let updateValue = this.state.countUpdateValue;
+    allCoupons.forEach(coupon => {
+      if (coupon.price <= clicks) {
+        coupons++;
+      }
+      if (
+        (updateValue < clicks && coupon.price > updateValue) ||
+        (coupon.price > clicks && coupon.price < updateValue)
+      ) {
+        updateValue = coupon.price;
+      }
+    });
+    this.setState({
+      claimableCoupons: coupons,
+      countUpdateValue: updateValue
+    });
   }
 
   setClicks(clicks) {
     this.setState({
       clicks: clicks
     });
+    if (clicks > this.state.countUpdateValue) {
+      this.updateCouponCount(clicks);
+    }
   }
 
   claimCoupon(couponId) {
@@ -40,6 +69,7 @@ class Clicker extends Component {
       clicks: clicks,
       coupons: coupons
     });
+    this.updateCouponCount(clicks);
   }
 
   render() {
@@ -64,9 +94,14 @@ class Clicker extends Component {
           />
           <Route
             path='/profile'
-            render={props => <Profile coupons={this.state.coupons} />}
+            render={props => (
+              <Profile
+                clicks={this.state.clicks}
+                coupons={this.state.coupons}
+              />
+            )}
           />
-          <Menu claimableCoupons={5} />
+          <Menu claimableCoupons={this.state.claimableCoupons} />
         </div>
       </Router>
     );
