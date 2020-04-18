@@ -12,11 +12,16 @@ import './App.css';
 class Clicker extends Component {
   constructor(props) {
     super(props);
+    let clicks = parseInt(localStorage.getItem('clicks'));
+    clicks = clicks ? clicks : 0;
+    let coupons = localStorage.getItem('coupons');
+    coupons = coupons ? JSON.parse(coupons) : [];
+
     this.state = {
-      clicks: 0,
-      coupons: [],
+      clicks: clicks,
+      coupons: coupons,
       claimableCoupons: 0,
-      countUpdateValue: 0
+      countUpdateValue: 0,
     };
     this.setClicks = this.setClicks.bind(this);
     this.claimCoupon = this.claimCoupon.bind(this);
@@ -30,7 +35,7 @@ class Clicker extends Component {
   updateCouponCount(clicks) {
     let coupons = 0;
     let updateValue = this.state.countUpdateValue;
-    allCoupons.forEach(coupon => {
+    allCoupons.forEach((coupon) => {
       if (coupon.price <= clicks) {
         coupons++;
       }
@@ -43,21 +48,22 @@ class Clicker extends Component {
     });
     this.setState({
       claimableCoupons: coupons,
-      countUpdateValue: updateValue
+      countUpdateValue: updateValue,
     });
   }
 
   setClicks(clicks) {
     this.setState({
-      clicks: clicks
+      clicks: clicks,
     });
     if (clicks > this.state.countUpdateValue) {
       this.updateCouponCount(clicks);
     }
+    localStorage.setItem('clicks', clicks);
   }
 
   claimCoupon(couponId) {
-    let filteredCoupons = allCoupons.filter(offer => offer.id === couponId);
+    let filteredCoupons = allCoupons.filter((offer) => offer.id === couponId);
     let selectedCoupon = Object.assign({}, filteredCoupons[0]);
     selectedCoupon.claimed = Date.now();
     selectedCoupon.validDue = Date.now() + 14 * 24 * 60 * 60 * 1000;
@@ -67,9 +73,11 @@ class Clicker extends Component {
     coupons.push(selectedCoupon);
     this.setState({
       clicks: clicks,
-      coupons: coupons
+      coupons: coupons,
     });
     this.updateCouponCount(clicks);
+    localStorage.setItem('clicks', clicks);
+    localStorage.setItem('coupons', JSON.stringify(coupons));
   }
 
   render() {
@@ -79,13 +87,13 @@ class Clicker extends Component {
           <Route
             path='/'
             exact
-            render={props => (
+            render={(props) => (
               <Game clicks={this.state.clicks} setClicks={this.setClicks} />
             )}
           />
           <Route
             path='/coupons'
-            render={props => (
+            render={(props) => (
               <Coupons
                 clicks={this.state.clicks}
                 claimCoupon={this.claimCoupon}
@@ -94,7 +102,7 @@ class Clicker extends Component {
           />
           <Route
             path='/profile'
-            render={props => (
+            render={(props) => (
               <Profile
                 clicks={this.state.clicks}
                 coupons={this.state.coupons}
